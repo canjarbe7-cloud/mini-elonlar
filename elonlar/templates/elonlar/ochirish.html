@@ -1,0 +1,58 @@
+{% extends "elonlar/base.html" %}
+
+{% block title %}E'lon o'chirish - Elon{% endblock %}
+
+{% block content %}
+<section class="top-panel">
+    <div>
+        <p class="eyebrow">Admin</p>
+        <h1>E'lon o'chirish</h1>
+    </div>
+    <div class="stats">
+        <strong>{{ total_count }}</strong>
+        <span>faol e'lon</span>
+    </div>
+</section>
+
+<section class="admin-toolbar">
+    <form method="get">
+        <input type="search" name="q" value="{{ query }}" placeholder="E'lon qidirish">
+        <button class="button button-dark" type="submit">Qidirish</button>
+        <a class="button button-light" href="{% url 'elonlar:delete_list' %}">Tozalash</a>
+    </form>
+</section>
+
+<section class="listings admin-listings">
+    {% for listing in listings %}
+        <article class="listing-card">
+            <a class="listing-image" href="{{ listing.get_absolute_url }}">
+                {% if listing.display_image %}
+                    <img src="{{ listing.display_image }}" alt="{{ listing.title }}">
+                {% else %}
+                    <span>{{ listing.category.name }}</span>
+                {% endif %}
+            </a>
+            <div class="listing-body">
+                <div class="listing-meta">
+                    <span>{{ listing.category.name }}</span>
+                    <span>{{ listing.city }}</span>
+                </div>
+                <h2><a href="{{ listing.get_absolute_url }}">{{ listing.title }}</a></h2>
+                <p>{{ listing.description|truncatechars:92 }}</p>
+                <div class="listing-footer">
+                    <strong>{{ listing.price|floatformat:0 }} so'm</strong>
+                    {% include "elonlar/includes/view_count.html" with count=listing.views %}
+                </div>
+                <div class="listing-admin-actions">
+                    <a class="button button-danger full" href="{% url 'elonlar:delete' listing.slug %}">O'chirish</a>
+                </div>
+            </div>
+        </article>
+    {% empty %}
+        <div class="empty-state">
+            <h2>E'lon topilmadi</h2>
+            <a class="button button-light" href="{% url 'elonlar:home' %}">Bosh sahifa</a>
+        </div>
+    {% endfor %}
+</section>
+{% endblock %}

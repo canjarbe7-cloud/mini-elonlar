@@ -1,0 +1,35 @@
+{% extends "elonlar/base.html" %}
+
+{% block title %}{{ listing.title }} o'chirish - Elon{% endblock %}
+
+{% block content %}
+<section class="delete-confirm">
+    <div class="delete-preview">
+        {% if listing.display_image %}
+            <img src="{{ listing.display_image }}" alt="{{ listing.title }}">
+        {% else %}
+            <span>{{ listing.category.name }}</span>
+        {% endif %}
+    </div>
+
+    <article class="detail-card">
+        <div class="listing-meta">
+            <span>{{ listing.category.name }}</span>
+            <span>{{ listing.city }}</span>
+        </div>
+        <div class="form-heading">
+            <p class="eyebrow">Admin</p>
+            <h1>E'lon o'chirish</h1>
+        </div>
+        <h2>{{ listing.title }}</h2>
+        <p class="description">{{ listing.description|truncatechars:180 }}</p>
+        <p class="price">{{ listing.price|floatformat:0 }} so'm</p>
+
+        <form class="detail-actions" method="post">
+            {% csrf_token %}
+            <button class="button button-danger" type="submit">O'chirish</button>
+            <a class="button button-light" href="{% url 'elonlar:delete_list' %}">Bekor qilish</a>
+        </form>
+    </article>
+</section>
+{% endblock %}

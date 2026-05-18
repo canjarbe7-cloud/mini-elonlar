@@ -1,0 +1,18 @@
+{% extends "elonlar/base.html" %}
+
+{% block title %}Chiqish - Elon{% endblock %}
+
+{% block content %}
+<section class="auth-shell">
+    <div class="form-heading">
+        <p class="eyebrow">Chiqish</p>
+        <h1>Akkauntdan chiqasizmi?</h1>
+    </div>
+
+    <form method="post" action="{% url 'account_logout' %}">
+        {% csrf_token %}
+        <button class="button button-dark" type="submit">Ha, chiqish</button>
+        <a class="button button-light" href="{% url 'elonlar:home' %}">Bekor qilish</a>
+    </form>
+</section>
+{% endblock %}

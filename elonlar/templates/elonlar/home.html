@@ -1,0 +1,125 @@
+{% extends "elonlar/base.html" %}
+
+{% block title %}E'lonlar - Elon{% endblock %}
+
+{% block content %}
+<section class="top-panel">
+    <div>
+        <p class="eyebrow">Mahalliy marketplace</p>
+        <h1>E'lon toping va joylang</h1>
+    </div>
+    <div class="stats">
+        <strong>{{ total_count }}</strong>
+        <span>faol e'lon</span>
+    </div>
+</section>
+
+<section class="market-layout">
+    <aside class="filters">
+        <form method="get">
+            <label>
+                Qidiruv
+                <input type="search" name="q" value="{{ filters.q }}" placeholder="Nima qidiryapsiz?">
+            </label>
+
+            <label>
+                Kategoriya
+                <select name="category" onchange="this.form.submit()">
+                    <option value="">Hammasi</option>
+                    {% for category in categories %}
+                        <option value="{{ category.slug }}" {% if filters.category == category.slug %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <label>
+                Shahar
+                <select name="city" onchange="this.form.submit()">
+                    <option value="">Barcha shaharlar</option>
+                    {% for value, label in cities %}
+                        <option value="{{ value }}" {% if filters.city == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <div class="two-inputs">
+                <label>
+                    Min narx
+                    <input type="number" name="price_min" value="{{ filters.price_min }}" min="0" step="1000">
+                </label>
+                <label>
+                    Max narx
+                    <input type="number" name="price_max" value="{{ filters.price_max }}" min="0" step="1000">
+                </label>
+            </div>
+
+            <label>
+                Saralash
+                <select name="sort" onchange="this.form.submit()">
+                    <option value="new" {% if filters.sort == "new" %}selected{% endif %}>Eng yangi</option>
+                    <option value="cheap" {% if filters.sort == "cheap" %}selected{% endif %}>Arzonlari</option>
+                    <option value="expensive" {% if filters.sort == "expensive" %}selected{% endif %}>Qimmatlari</option>
+                    <option value="popular" {% if filters.sort == "popular" %}selected{% endif %}>Ko'p ko'rilgan</option>
+                </select>
+            </label>
+
+            <button class="button button-dark full" type="submit">Qidirish</button>
+            <a class="button button-light full" href="{% url 'elonlar:home' %}">Tozalash</a>
+        </form>
+    </aside>
+
+    <div class="listings">
+        {% for listing in page_obj %}
+            <article class="listing-card">
+                <a class="listing-image" href="{{ listing.get_absolute_url }}">
+                    {% if listing.display_image %}
+                        <img src="{{ listing.display_image }}" alt="{{ listing.title }}">
+                    {% else %}
+                        <span>{{ listing.category.name }}</span>
+                    {% endif %}
+                </a>
+                <div class="listing-body">
+                    <div class="listing-meta">
+                        <span>{{ listing.category.name }}</span>
+                        <span>{{ listing.city }}</span>
+                    </div>
+                    <h2><a href="{{ listing.get_absolute_url }}">{{ listing.title }}</a></h2>
+                    <p>{{ listing.description|truncatechars:92 }}</p>
+                    <div class="listing-footer">
+                        <strong>{{ listing.price|floatformat:0 }} so'm</strong>
+                        <div class="listing-card-stats">
+                            {% include "elonlar/includes/view_count.html" with count=listing.views %}
+                            <span>{{ listing.created_at|date:"d.m.Y" }}</span>
+                        </div>
+                    </div>
+                    {% if user.is_staff %}
+                        <div class="listing-admin-actions">
+                            <a class="button button-danger full" href="{% url 'elonlar:delete' listing.slug %}">O'chirish</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty-state">
+                <h2>E'lon topilmadi</h2>
+                <p>Filterlarni yengillashtiring yoki yangi e'lon qo'shing.</p>
+                <a class="button button-dark" href="{% url 'elonlar:create' %}">E'lon qo'shish</a>
+            </div>
+        {% endfor %}
+
+        {% if page_obj.paginator.num_pages > 1 %}
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?{% if page_query %}{{ page_query }}&{% endif %}page={{ page_obj.previous_page_number }}">Oldingi</a>
+                {% endif %}
+                <span>{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+                {% if page_obj.has_next %}
+                    <a href="?{% if page_query %}{{ page_query }}&{% endif %}page={{ page_obj.next_page_number }}">Keyingi</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

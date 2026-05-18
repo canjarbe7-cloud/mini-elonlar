@@ -1,0 +1,41 @@
+{% extends "elonlar/base.html" %}
+
+{% block title %}Google sozlash - Elon{% endblock %}
+
+{% block content %}
+<section class="setup-shell">
+    <div class="setup-main">
+        <div class="form-heading">
+            <p class="eyebrow">Google login</p>
+            <h1>Google kirishni sozlash</h1>
+        </div>
+
+        <form class="setup-form" method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="form-errors">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            {% for field in form %}
+                <label>
+                    {{ field.label }}
+                    {{ field }}
+                    {% for error in field.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </label>
+            {% endfor %}
+
+            <button class="button button-dark full" type="submit">Saqlash</button>
+        </form>
+    </div>
+
+    <aside class="setup-guide">
+        <h2>Google Cloud'da qo'shiladigan callback</h2>
+        <div class="copy-box">{{ redirect_uri }}</div>
+        <p>Google Cloud Console'da OAuth Client yarating va shu callback URL'ni Authorized redirect URI joyiga qo'shing.</p>
+        <a class="button button-light full" href="{% url 'account_login' %}">Login sahifasiga qaytish</a>
+    </aside>
+</section>
+{% endblock %}

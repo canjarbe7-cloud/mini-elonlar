@@ -1,0 +1,68 @@
+{% load static %}
+<!doctype html>
+<html lang="uz">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Elon{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'elonlar/styles.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="nav">
+            <a class="brand" href="{% url 'elonlar:home' %}">
+                <span class="brand-mark">E</span>
+                <span>Elon</span>
+            </a>
+            <div class="nav-actions">
+                <a class="nav-link" href="{% url 'elonlar:home' %}">E'lonlar</a>
+                <a class="button button-dark" href="{% url 'elonlar:create' %}">E'lon qo'shish</a>
+                <a class="button button-light" href="{% url 'elonlar:delete_list' %}">E'lon o'chirish</a>
+                {% if user.is_authenticated %}
+                    <span class="nav-user">{{ user.get_short_name|default:user.username }}</span>
+                    {% if user.is_staff %}
+                        <a class="button button-light" href="{% url 'elonlar:admin_password' %}">Parol</a>
+                    {% endif %}
+                    <form class="nav-form" method="post" action="{% url 'account_logout' %}">
+                        {% csrf_token %}
+                        <button class="button button-light" type="submit">Chiqish</button>
+                    </form>
+                {% else %}
+                    {% if google_auth_ready %}
+                        <form class="nav-form" method="post" action="{% url 'google_login' %}">
+                            {% csrf_token %}
+                            <button class="button button-google" type="submit">
+                                <span class="google-mark">G</span>
+                                Google
+                            </button>
+                        </form>
+                    {% else %}
+                        <a class="button button-google" href="{% url 'account_login' %}">
+                            <span class="google-mark">G</span>
+                            Google
+                        </a>
+                    {% endif %}
+                {% endif %}
+                <a class="button button-light" href="{% url 'admin:index' %}">Admin</a>
+            </div>
+        </nav>
+    </header>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <span>Elon</span>
+        <span>Oddiy marketplace loyihasi</span>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{% extends "elonlar/base.html" %}
+
+{% block title %}E'lon qo'shish - Elon{% endblock %}
+
+{% block content %}
+<section class="form-shell">
+    <div class="form-heading">
+        <p class="eyebrow">Yangi e'lon</p>
+        <h1>E'lon qo'shish</h1>
+    </div>
+
+    <form class="listing-form" method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="form-errors">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        {% for field in form %}
+            <label class="{% if field.name == 'description' %}wide{% endif %}">
+                {{ field.label }}
+                {{ field }}
+                {% if field.help_text %}
+                    <span class="help">{{ field.help_text }}</span>
+                {% endif %}
+                {% for error in field.errors %}
+                    <span class="error">{{ error }}</span>
+                {% endfor %}
+            </label>
+        {% endfor %}
+
+        <div class="form-actions">
+            <button class="button button-dark" type="submit">Saqlash</button>
+            <a class="button button-light" href="{% url 'elonlar:home' %}">Bekor qilish</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "elonlar/base.html" %}
+
+{% block title %}Kirish - Elon{% endblock %}
+
+{% block content %}
+<section class="auth-shell">
+    <div class="form-heading">
+        <p class="eyebrow">Kirish</p>
+        <h1>Google orqali kiring</h1>
+    </div>
+
+    {% if google_auth_ready %}
+        <form method="post" action="{% url 'google_login' %}">
+            {% csrf_token %}
+            <button class="button button-google full" type="submit">
+                <span class="google-mark">G</span>
+                Google bilan kirish
+            </button>
+        </form>
+    {% else %}
+        <div class="auth-note">
+            <strong>Google login hali sozlanmagan.</strong>
+            <p>Avval Google ma'lumotlarini saytdan kiriting, keyin Google bilan kirish tugmasi ishlaydi.</p>
+        </div>
+        {% if google_setup_allowed %}
+            <a class="button button-dark full" href="{% url 'elonlar:google_setup' %}">
+                Google loginni sozlash
+            </a>
+        {% endif %}
+    {% endif %}
+
+    <p class="auth-help">
+        Admin parol esdan chiqqan bo'lsa, Gmailga kod yuborib yangi parol qo'yishingiz mumkin.
+        <a href="{% url 'elonlar:admin_password_request' %}">Parolni tiklash</a>
+    </p>
+    <p class="auth-help">
+        Agar oddiy foydalanuvchi parolini unutgan bo'lsa, umumiy tiklash sahifasi:
+        <a href="{% url 'account_reset_password' %}">Parolni tiklash (email orqali)</a>
+    </p>
+    
+    <div style="margin-top:1.25rem;">
+        <h2>Telegram orqali kirish</h2>
+        {% if telegram_bot_ready %}
+            <script async src="https://telegram.org/js/telegram-widget.js?15" data-telegram-login="{{ telegram_bot_username }}" data-size="large" data-userpic="false" data-auth-url="{% url 'elonlar:telegram_login' %}"></script>
+        {% else %}
+            <div class="auth-note">Telegram login hozircha sozlanmagan.</div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

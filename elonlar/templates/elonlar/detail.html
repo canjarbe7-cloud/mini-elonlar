@@ -1,0 +1,70 @@
+{% extends "elonlar/base.html" %}
+
+{% block title %}{{ listing.title }} - Elon{% endblock %}
+
+{% block content %}
+<section class="detail-layout">
+    <div class="detail-media">
+        {% if listing.display_image %}
+            <img src="{{ listing.display_image }}" alt="{{ listing.title }}">
+        {% else %}
+            <span>{{ listing.category.name }}</span>
+        {% endif %}
+    </div>
+
+    <article class="detail-card">
+        <div class="listing-meta">
+            <span>{{ listing.category.name }}</span>
+            <span>{{ listing.city }}</span>
+            <span>{{ listing.get_condition_display }}</span>
+        </div>
+        <h1>{{ listing.title }}</h1>
+        {% include "elonlar/includes/view_count.html" with count=listing.views label="marta ko'rilgan" %}
+        <p class="price">{{ listing.price|floatformat:0 }} so'm</p>
+        <p class="description">{{ listing.description|linebreaksbr }}</p>
+
+        <div class="seller-box">
+            <div>
+                <span class="muted">Sotuvchi</span>
+                <strong>{{ listing.seller_name }}</strong>
+            </div>
+            <div>
+                <span class="muted">Telefon</span>
+                <a href="tel:{{ listing.phone }}">{{ listing.phone }}</a>
+            </div>
+            {% if listing.address %}
+                <div>
+                    <span class="muted">Manzil</span>
+                    <strong>{{ listing.address }}</strong>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="detail-actions">
+            <a class="button button-dark" href="tel:{{ listing.phone }}">Qo'ng'iroq qilish</a>
+            <a class="button button-light" href="{% url 'elonlar:home' %}">Orqaga</a>
+            {% if user.is_staff %}
+                <a class="button button-danger" href="{% url 'elonlar:delete' listing.slug %}">O'chirish</a>
+            {% endif %}
+        </div>
+
+        <p class="muted small">
+            {{ listing.created_at|date:"d.m.Y H:i" }} da qo'shilgan
+        </p>
+    </article>
+</section>
+
+{% if similar_listings %}
+    <section class="similar">
+        <h2>O'xshash e'lonlar</h2>
+        <div class="similar-grid">
+            {% for item in similar_listings %}
+                <a class="similar-item" href="{{ item.get_absolute_url }}">
+                    <span>{{ item.title }}</span>
+                    <strong>{{ item.price|floatformat:0 }} so'm</strong>
+                </a>
+            {% endfor %}
+        </div>
+    </section>
+{% endif %}
+{% endblock %}
