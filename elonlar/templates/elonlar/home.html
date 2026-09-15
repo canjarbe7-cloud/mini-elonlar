@@ -24,19 +24,17 @@
 
             <label>
                 Kategoriya
-                <select name="category" onchange="this.form.submit()">
+                <select name="category">
                     <option value="">Hammasi</option>
                     {% for category in categories %}
-                        <option value="{{ category.slug }}" {% if filters.category == category.slug %}selected{% endif %}>
-                            {{ category.name }}
-                        </option>
+                        <option value="{{ category.slug }}" {% if filters.category == category.slug %}selected{% endif %}>{{ category.name }}</option>
                     {% endfor %}
                 </select>
             </label>
 
             <label>
                 Shahar
-                <select name="city" onchange="this.form.submit()">
+                <select name="city">
                     <option value="">Barcha shaharlar</option>
                     {% for value, label in cities %}
                         <option value="{{ value }}" {% if filters.city == value %}selected{% endif %}>{{ label }}</option>
@@ -57,7 +55,7 @@
 
             <label>
                 Saralash
-                <select name="sort" onchange="this.form.submit()">
+                <select name="sort">
                     <option value="new" {% if filters.sort == "new" %}selected{% endif %}>Eng yangi</option>
                     <option value="cheap" {% if filters.sort == "cheap" %}selected{% endif %}>Arzonlari</option>
                     <option value="expensive" {% if filters.sort == "expensive" %}selected{% endif %}>Qimmatlari</option>
